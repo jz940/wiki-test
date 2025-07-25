@@ -50,3 +50,5 @@ in which the word appears. This scoring method is known as TF-IDF.
 Considering changing the `get_dump_url` function to parse the [entry page](https://dumps.wikimedia.org/enwiki/) of the
 repository to automatically select the latest completed dump; completed dumps are those inside a directory marked
 with a date (directory `latest` might contain incomplete data).
+
+Reducing the huge amount of memory the pandas df constructed in the compute_frequencies function can improve efficiency in future.
