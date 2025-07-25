@@ -85,8 +85,8 @@ def extract_pages(dump_path):
                 pagefile = open(pageid(filecount), 'w')
             
             # just for dev
-            if filecount > 100:
-                break
+            # if filecount > 100:
+            #     break
     try:
         pagefile.close()
     except:

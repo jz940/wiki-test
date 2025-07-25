@@ -1,7 +1,4 @@
 # Processing Wikipedia pages
-
-**IMPORTANT**: Please don't fork this repository. Make your own by cloning this one and changing ORIGIN to your repository.
-
 ## Pipeline
 
 This project provides a skeleton for a pipeline that downloads a MediaWiki dump from the online
@@ -26,7 +23,7 @@ result in a `sqlite` database wich will contain at least one table with the foll
 - Relative frequency: The frequency divided by the total number of word occurrences in the page (the same word
   occurring multiple times is counted as many times as it occurs).
   
-Please ignore the following:
+Ignoring the following:
 
 - Wikipedia pages whose wiki-text starts with '#REDIRECT', they are just pointers to an actual page.
 - Wikipedia pages with a title starting with `<namespace>:` for the namespaces included in
@@ -43,30 +40,13 @@ process the whole dataset once finished.
 
 ## SQL query
 
-Write a SQL query that given a Wikipedia page returns the 25 most relevant words for that page using the `sqlite`
+Will write a SQL query that given a Wikipedia page returns the 25 most relevant words for that page using the `sqlite`
 database. The relevance of a word in a page can be scored dividing the frequency (or relative frequency) of the word in
 the document by the logarithm `log(Nd/n)`, where `Nd` is the total number of documents and `n` the number of documents
 in which the word appears. This scoring method is known as TF-IDF.
 
-Feel free to create new columns or tables if you think it will simplify the writing of the query.
+## If there is time later
 
-## Useful Python libraries and modules
-
-Use any libraries you like, these are just some suggestions:
-
-- `gensim`: Has some functions for working with Wikipedia dumps, for example: `extract_pages` and `filter_wiki`.
-  `extract_pages` allows to iterate over the pages in the dump but it can only operate on decompressed streams;
-  `bz2` compression hence needs to be handled before passing the data to it. `filter_wiki` takes as input a
-  string containing text in the WikiText format and removes all the markup, returning plain text. Gensim also
-  has the `simple_preprocess` function that splits the text into words, returning a list of lowercased
-  words in the same order in which they appear in the document.
-
-- `cytoolz`: The function `frequencies` can be used to calculate the number of times each word appears in a
-  document; if a list is passed to it, it will return a dictionary with a count of the times each item
-  appears in the list.
-
-## If there is time
-
-Consider changing the `get_dump_url` function to parse the [entry page](https://dumps.wikimedia.org/enwiki/) of the
+Considering changing the `get_dump_url` function to parse the [entry page](https://dumps.wikimedia.org/enwiki/) of the
 repository to automatically select the latest completed dump; completed dumps are those inside a directory marked
 with a date (directory `latest` might contain incomplete data).
