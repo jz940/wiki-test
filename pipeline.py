@@ -4,13 +4,14 @@ import helpers
 from urllib.parse import urljoin
 import wget
 import bz2
-import gensim.corporas
+import gensim
 import os
 import re
 import toolz
 import xmltodict
 import pandas as pd
 import sqlite3
+import multiprocessing
 
 
 DUMPS_BASE_URL = 'https://dumps.wikimedia.org/enwiki/'
@@ -85,8 +86,8 @@ def extract_pages(dump_path):
                 pagefile = open(pageid(filecount), 'w')
             
             # just for dev
-            # if filecount > 100:
-            #     break
+            if filecount > 100:
+                break
     try:
         pagefile.close()
     except:
@@ -103,6 +104,7 @@ def compute_frequencies_multiprocessing_wrapped(pagefile:str):
     # transform xml to dict
     if len(extractpage) == 0:
         return None
+    # print(f'Processing page {filepath}')
     extractpagedict = xmltodict.parse(extractpage)
 
     # regex transform all text to lowercase
@@ -153,13 +155,17 @@ def compute_frequencies(extract_path):
         'relative_frequency':[]
     })
 
-    for page in contents:
-        if compute_frequencies_multiprocessing_wrapped(page) is None:
-            pass
-        else:
-            # add title to title col, explode per num of words in freqs
-            pagedf = compute_frequencies_multiprocessing_wrapped(page)
-            df = pd.concat([df, pagedf])
+    # for page in contents:
+    #     if compute_frequencies_multiprocessing_wrapped(page) is None:
+    #         pass
+    #     else:
+    #         # add title to title col, explode per num of words in freqs
+    #         pagedf = compute_frequencies_multiprocessing_wrapped(page)
+    #         df = pd.concat([df, pagedf])
+
+    with multiprocessing.Pool(multiprocessing.cpu_count()) as pool:
+        dfs = pool.map(compute_frequencies_multiprocessing_wrapped, contents)
+    df = pd.concat(dfs, ignore_index=True)
     
     # aggregate frequencies for new columns
     df['word_page_count'] = df.groupby('word')['wikipedia_page_id'].transform('count')
